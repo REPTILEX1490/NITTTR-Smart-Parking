@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>NITTTR Smart Parking AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+
+<body>
+
+
+<nav>
+
+    <div class="logo">
+        🅿 NITTTR SMART PARKING AI
+    </div>
+
+    <div class="nav">
+
+        <a href="/">Dashboard</a>
+
+        <a href="/performance">
+            ML Performance
+        </a>
+
+        <a href="/about">
+            About
+        </a>
+
+    </div>
+
+</nav>
+
+
+<section class="hero">
+
+    <div>
+
+        <h1>
+            AI-Based Parking Intelligence System
+        </h1>
+
+        <p>
+            Predict parking occupancy and availability
+            using Machine Learning
+        </p>
+
+    </div>
+
+</section>
+
+
+<div class="container">
+
+
+    <!-- INPUT CARD -->
+
+    <div class="input-card">
+
+        <h2>
+            🔮 Predict Future Parking Availability
+        </h2>
+
+        <p>
+            Enter the parking area, day and time.
+        </p>
+
+
+        <form method="POST">
+
+
+            <label>
+                Parking Area
+            </label>
+
+            <select
+                name="parking_id"
+                required
+            >
+
+                <option value="P1">
+                    P1 - Car Parking
+                </option>
+
+                <option value="P2">
+                    P2 - Car Parking
+                </option>
+
+                <option value="P3">
+                    P3 - Bike Parking
+                </option>
+
+            </select>
+
+
+            <label>
+                Day
+            </label>
+
+            <select
+                name="day"
+                required
+            >
+
+                <option value="0">
+                    Monday
+                </option>
+
+                <option value="1">
+                    Tuesday
+                </option>
+
+                <option value="2">
+                    Wednesday
+                </option>
+
+                <option value="3">
+                    Thursday
+                </option>
+
+                <option value="4">
+                    Friday
+                </option>
+
+                <option value="5">
+                    Saturday
+                </option>
+
+                <option value="6">
+                    Sunday
+                </option>
+
+            </select>
+
+
+            <label>
+                Time
+            </label>
+
+            <input
+                type="time"
+                name="time"
+                required
+            >
+
+
+            <button type="submit">
+
+                🔮 PREDICT AVAILABILITY
+
+            </button>
+
+        </form>
+
+    </div>
+
+
+    {% if result %}
+
+
+    <!-- MAIN RESULT -->
+
+    <div class="prediction">
+
+
+        <div class="prediction-header">
+
+            <div>
+
+                <h2>
+                    {{ result.parking_name }}
+                </h2>
+
+                <p>
+                    Prediction for {{ result.time }}
+                </p>
+
+            </div>
+
+            <div class="model-badge">
+
+                🤖 {{ best_model }}
+
+            </div>
+
+        </div>
+
+
+        <!-- BIG NUMBERS -->
+
+        <div class="stats">
+
+
+            <div class="stat">
+
+                <span>
+                    OCCUPANCY
+                </span>
+
+                <strong>
+                    {{ result.occupancy }}%
+                </strong>
+
+            </div>
+
+
+            <div class="stat">
+
+                <span>
+                    AVAILABLE
+                </span>
+
+                <strong>
+                    {{ result.availability }}%
+                </strong>
+
+            </div>
+
+
+            <div class="stat">
+
+                <span>
+                    AVAILABLE SPACES
+                </span>
+
+                <strong>
+                    {{ result.available_spaces }}
+                </strong>
+
+            </div>
+
+
+            <div class="stat">
+
+                <span>
+                    STATUS
+                </span>
+
+                <strong class="{{ result.status_class }}">
+
+                    {{ result.status }}
+
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- PROGRESS -->
+
+        <div class="progress-area">
+
+            <div class="progress-label">
+
+                <span>
+                    Parking Occupancy
+                </span>
+
+                <span>
+                    {{ result.occupancy }}%
+                </span>
+
+            </div>
+
+
+            <div class="progress">
+
+                <div
+                    class="progress-fill"
+                    style="width: {{ result.occupancy }}%"
+                >
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- NEXT HOUR -->
+
+        <div class="next-hour">
+
+            <h3>
+                ⏰ Next-Hour Forecast
+            </h3>
+
+            <div class="next-grid">
+
+                <div>
+
+                    <span>
+                        Time
+                    </span>
+
+                    <strong>
+                        {{ result.next_hour }}
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Occupancy
+                    </span>
+
+                    <strong>
+                        {{ result.next_occupancy }}%
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Availability
+                    </span>
+
+                    <strong>
+                        {{ result.next_availability }}%
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RECOMMENDATION -->
+
+        <div class="recommendation">
+
+            <h3>
+                🤖 AI Recommendation
+            </h3>
+
+            <p>
+                {{ result.recommendation }}
+            </p>
+
+        </div>
+
+
+        <!-- PEAK -->
+
+        <div class="peak">
+
+            <strong>
+                📈 Historical Peak Hour:
+            </strong>
+
+            {{ result.peak_hour }}
+
+        </div>
+
+
+        <!-- CHART -->
+
+        {% if chart_data %}
+
+        <div class="chart-card">
+
+            <h3>
+                Historical Occupancy Trend
+            </h3>
+
+            <canvas id="parkingChart"></canvas>
+
+        </div>
+
+        {% endif %}
+
+
+    </div>
+
+
+    {% endif %}
+
+
+</div>
+
+
+<footer>
+
+    <strong>
+        NITTTR Smart Parking AI
+    </strong>
+
+    <br>
+
+    AI-Based Parking Occupancy Prediction System
+
+    <br>
+
+    NITTTR Bhopal | BCA Internship Project
+
+</footer>
+
+
+{% if chart_data %}
+
+<script>
+
+const labels =
+    {{ chart_data.labels | tojson }};
+
+const values =
+    {{ chart_data.values | tojson }};
+
+
+new Chart(
+
+    document.getElementById(
+        "parkingChart"
+    ),
+
+    {
+
+        type: "line",
+
+        data: {
+
+            labels: labels.map(
+                x => x + ":00"
+            ),
+
+            datasets: [
+
+                {
+
+                    label:
+                        "Occupancy %",
+
+                    data: values,
+
+                    tension: 0.3,
+
+                    fill: true
+
+                }
+
+            ]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            scales: {
+
+                y: {
+
+                    beginAtZero: true,
+
+                    max: 100
+
+                }
+
+            }
+
+        }
+
+    }
+
+);
+
+</script>
+
+{% endif %}
+
+
+</body>
+
+</html>
