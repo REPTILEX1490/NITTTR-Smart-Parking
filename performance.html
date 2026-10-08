@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>ML Performance</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+
+<nav>
+
+    <div class="logo">
+        🅿 NITTTR SMART PARKING AI
+    </div>
+
+    <div class="nav">
+
+        <a href="/">Dashboard</a>
+
+        <a href="/performance">
+            ML Performance
+        </a>
+
+        <a href="/about">
+            About
+        </a>
+
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+
+<div class="page-card">
+
+    <h1>
+        🤖 Machine Learning Performance
+    </h1>
+
+    <p>
+        Comparison of the machine learning
+        algorithms used for parking prediction.
+    </p>
+
+
+    <div class="best-model">
+
+        Best Model:
+
+        <strong>
+            {{ best_model }}
+        </strong>
+
+    </div>
+
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Model</th>
+
+                <th>MAE</th>
+
+                <th>RMSE</th>
+
+                <th>R²</th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            {% for name, value in results.items() %}
+
+            <tr>
+
+                <td>
+                    {{ name }}
+                </td>
+
+                <td>
+                    {{ value.MAE }}
+                </td>
+
+                <td>
+                    {{ value.RMSE }}
+                </td>
+
+                <td>
+                    {{ value.R2 }}
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+
+    <div class="metric-info">
+
+        <h3>
+            Evaluation Metrics
+        </h3>
+
+        <p>
+            <strong>MAE:</strong>
+            Mean Absolute Error. Lower is better.
+        </p>
+
+        <p>
+            <strong>RMSE:</strong>
+            Root Mean Squared Error. Lower is better.
+        </p>
+
+        <p>
+            <strong>R²:</strong>
+            Measures how well the model explains
+            the variation in the target.
+        </p>
+
+    </div>
+
+
+</div>
+
+
+</div>
+
+
+<footer>
+
+    NITTTR Smart Parking AI
+
+</footer>
+
+
+</body>
+
+</html>
